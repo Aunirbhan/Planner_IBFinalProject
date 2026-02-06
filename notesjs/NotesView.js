@@ -1,3 +1,10 @@
+// Sanitize strings before inserting into HTML to prevent XSS
+function escapeHTML(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 export default class NotesView {
     constructor(root, { onNoteSelect, onNoteAdd, onNoteEdit, onNoteDelete } = {}) {
         this.root = root;
@@ -40,10 +47,10 @@ export default class NotesView {
         const MAX_BODY_LENGTH = 60;
 
         return `
-            <div class="notes__list-item" data-note-id="${id}">
-                <div class="notes__small-title">${title}</div>
+            <div class="notes__list-item" data-note-id="${escapeHTML(String(id))}">
+                <div class="notes__small-title">${escapeHTML(title)}</div>
                 <div class="notes__small-body">
-                    ${body.substring(0, MAX_BODY_LENGTH)}
+                    ${escapeHTML(body.substring(0, MAX_BODY_LENGTH))}
                     ${body.length > MAX_BODY_LENGTH ? "..." : ""}
                 </div>
                 <div class="notes__small-updated">

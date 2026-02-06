@@ -18,6 +18,13 @@ const calendar = document.querySelector(".calendar"),
   addEventTo = document.querySelector(".event-time-to "),
   addEventSubmit = document.querySelector(".add-event-btn ");
 
+// Sanitize strings before inserting into HTML to prevent XSS
+function escapeHTML(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 let today = new Date();
 let activeDay;
 let month = today.getMonth();
@@ -233,10 +240,10 @@ function updateEvents(date) {
         events += `<div class="event">
             <div class="title">
               <i class="fas fa-circle"></i>
-              <h3 class="event-title">${event.title}</h3>
+              <h3 class="event-title">${escapeHTML(event.title)}</h3>
             </div>
             <div class="event-time">
-              <span class="event-time">${event.time}</span>
+              <span class="event-time">${escapeHTML(event.time)}</span>
             </div>
         </div>`;
       });
@@ -381,7 +388,7 @@ addEventSubmit.addEventListener("click", () => {
 eventsContainer.addEventListener("click", (e) => {
   if (e.target.classList.contains("event")) {
     if (confirm("Are you sure you want to delete this task?")) {
-      const eventTitle = e.target.children[0].children[1].innerHTML;
+      const eventTitle = e.target.children[0].children[1].textContent;
       eventsArr.forEach((event) => {
         if (
           event.day === activeDay &&
